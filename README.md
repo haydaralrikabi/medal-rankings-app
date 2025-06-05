@@ -1,36 +1,200 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Medal Rankings App
 
-## Getting Started
+A dynamic Next.js application that displays Olympic medal rankings with interactive sorting capabilities. Users can sort countries by gold, silver, bronze, or total medals with proper tiebreaker logic.
 
-First, run the development server:
+![Medal Rankings Screenshot](./public/app-sample.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🏆 Features
+
+- **Interactive Sorting**: Click column headers to sort by gold, silver, bronze, or total medals
+- **URL-based State**: Sort preferences persist in URL parameters (`?sort=gold|silver|bronze|total`)
+- **Tiebreaker Logic**:
+  - Total medals sort: ties broken by most gold
+  - Gold medals sort: ties broken by most silver
+  - Silver medals sort: ties broken by most gold
+  - Bronze medals sort: ties broken by most gold
+- **Flag Display**: Country flags rendered using CSS sprites
+- **Error Handling**: Graceful fallback with retry functionality when API fails
+- **Responsive Design**: Mobile-friendly table layout
+- **Real-time Updates**: No page refresh needed when changing sort order
+
+## 🛠 Technical Stack
+
+- **Framework**: Next.js 15.3.3 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Testing**: Jest + React Testing Library
+- **Build Tools**:
+  - Turbopack (development)
+  - Webpack (production)
+- **Code Quality**: ESLint
+
+## 📁 Project Structure
+
+```
+medal-rankings-app/
+├── src/
+│   ├── app/
+│   │   ├── api/medals/route.ts          # Medal data API endpoint
+│   │   ├── layout.tsx                   # Root layout
+│   │   ├── page.tsx                     # Main page component
+│   │   └── globals.css                  # Global styles
+│   ├── components/
+│   │   ├── __tests__/
+│   │   │   └── Flag.test.tsx           # Flag component tests
+│   │   ├── Flag.tsx                    # Flag sprite component
+│   │   └── MedalRankings.tsx           # Main rankings table
+│   ├── data/
+│   │   └── medals.json                 # Medal data
+│   ├── types/
+│   │   └── medal.ts                    # TypeScript interfaces
+│   └── utils/
+│       ├── __tests__/
+│       │   └── medalSorting.test.ts    # Sorting logic tests
+│       └── medalSorting.ts             # Sorting utilities
+├── public/
+│   └── flags.png                       # Flag sprite sheet
+├── .env.local                          # Development environment
+├── .env.production                     # Production environment
+├── jest.config.js                      # Jest configuration
+├── jest.setup.js                       # Jest setup
+└── package.json                        # Dependencies and scripts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 18+
+- npm or yarn
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repository**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+git clone <repository-url>
+cd medal-rankings-app
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Install dependencies**
 
-## Deploy on Vercel
+```bash
+npm install
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Set up environment variables**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+# .env.local already exists with:
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+```
+
+4. **Add medal data**
+   - Place your `medals.json` file in `src/data/`
+   - Place your `flags.png` sprite sheet in `public/`
+
+### Development
+
+```bash
+# Start development server with Turbopack
+npm run dev
+
+# Open browser to http://localhost:3000
+```
+
+### Production Build
+
+```bash
+# Build for production (uses Webpack)
+npm run build
+
+# Start production server
+npm start
+```
+
+## 🧪 Testing
+
+### Run Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm test -- --coverage
+```
+
+### Test Coverage
+
+- **Flag Component**: Sprite positioning, styling, accessibility
+- **Medal Sorting**: All sort types, tiebreaker logic, edge cases
+- **Type Safety**: TypeScript interfaces and type checking
+
+### Manual Testing
+
+1. **Default Behaviour**: Visit `/` - should sort by gold medals
+2. **URL Parameters**:
+   - `/` → sorts by gold (default)
+   - `/?sort=silver` → sorts by silver medals
+   - `/?sort=bronze` → sorts by bronze medals
+   - `/?sort=total` → sorts by total medals
+3. **Interactive Sorting**: Click column headers to change sort
+4. **Error Handling**: Uncomment error simulation in `src/app/api/medals/route.ts`
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+| Variable                   | Development             | Production                | Description            |
+| -------------------------- | ----------------------- | ------------------------- | ---------------------- |
+| `NEXT_PUBLIC_API_BASE_URL` | `http://localhost:3000` | `https://your-domain.com` | Base URL for API calls |
+
+### Flag Sprite Configuration
+
+The flag sprite sheet (`public/flags.png`) should contain flags arranged vertically:
+
+- **Dimensions**: 28px width × 17px height per flag
+- **Format**: PNG with transparent background
+
+### Medal Data Format
+
+```json
+[
+  {
+    "code": "USA",
+    "gold": 9,
+    "silver": 7,
+    "bronze": 12
+  }
+]
+```
+
+## 📈 Performance
+
+- **Development**: Turbopack for fast builds and hot reload
+- **Production**: Webpack with optimisations
+- **Bundle Size**: Optimised with code splitting and tree shaking
+- **API**: Simulated delay of 100ms for realistic UX
+
+## 🚀 Deployment
+
+### Build Commands
+
+```bash
+# Development build
+npm run dev
+
+# Production build
+npm run build
+npm start
+```
+
+### Environment Setup
+
+1. Update `NEXT_PUBLIC_API_BASE_URL` in production environment
+2. Ensure all environment variables are configured
+3. Test production build locally before deployment
